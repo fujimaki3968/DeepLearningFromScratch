@@ -11,12 +11,8 @@ def relu(x):
 
 # p69
 def softmax(x):
-    C = np.max(x)
-    # 誤差を減らすぞい
-    exp_x = np.exp(x - C)
-    sum_exp_x = np.sum(exp_x)
-    y = exp_x / sum_exp_x
-    return y
+    x = x - np.max(x, axis=-1, keepdims=True)   # オーバーフロー対策
+    return np.exp(x) / np.sum(np.exp(x), axis=-1, keepdims=True)
 
 
 ### chapter 4
@@ -26,14 +22,17 @@ def mean_squared_error(y, t):
 
 
 def cross_entropy_error(y, t):
-    delta = 1e-7
-
     if y.ndim == 1:
         t = t.reshape(1, t.size)
         y = y.reshape(1, y.size)
+        
+    # 教師データがone-hot-vectorの場合、正解ラベルのインデックスに変換
+    if t.size == y.size:
+        t = t.argmax(axis=1)
+             
     batch_size = y.shape[0]
-    # log(0)を避けるために微小な数値を入れる
-    return -np.sum(t * np.log(y + delta)) / batch_size
+    return -np.sum(np.log(y[np.arange(batch_size), t] + 1e-7)) / batch_size
+
 
 
 def numerical_diff(f, x):
