@@ -38,6 +38,7 @@ class AddLayer:
 
 
 class ReluLayer:
+    # Reluを使用する際は Heの初期値を重みの初期値とする
     def __init__(self):
         self.mask = None
     
@@ -56,6 +57,7 @@ class ReluLayer:
 
 
 class SigmoidLayer:
+    # シグモイドを使用する際は初期値にはXavierの初期値を使用
     def __init__(self):
         self.out = None
 
